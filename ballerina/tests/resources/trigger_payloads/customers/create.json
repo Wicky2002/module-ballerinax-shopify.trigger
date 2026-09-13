@@ -1,0 +1,30 @@
+{
+  "id": 207119551,
+  "admin_graphql_api_id": "gid://shopify/Customer/207119551",
+  "email": "jane.doe@example.com",
+  "first_name": "Jane",
+  "last_name": "Doe",
+  "phone": "+16135551212",
+  "state": "disabled",
+  "currency": "USD",
+  "orders_count": 0,
+  "total_spent": "0.00",
+  "last_order_id": null,
+  "last_order_name": null,
+  "note": null,
+  "tags": "",
+  "verified_email": true,
+  "tax_exempt": false,
+  "accepts_marketing": false,
+  "marketing_opt_in_level": null,
+  "accepts_marketing_updated_at": "2026-09-14T09:10:02-04:00",
+  "multipass_identifier": null,
+  "created_at": "2026-09-14T09:10:02-04:00",
+  "updated_at": "2026-09-14T09:10:02-04:00",
+  "sms_marketing_consent": {
+    "state": "not_subscribed",
+    "opt_in_level": "single_opt_in",
+    "consent_updated_at": null,
+    "consent_collected_from": "SHOPIFY"
+  }
+}

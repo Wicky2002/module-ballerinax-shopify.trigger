@@ -1,0 +1,68 @@
+{
+  "id": 788032119674292900,
+  "admin_graphql_api_id": "gid://shopify/Product/788032119674292900",
+  "title": "Merino Wool Runner v2",
+  "body_html": "<p>Lightweight everyday runner in responsibly sourced merino wool.</p>",
+  "vendor": "Example Store",
+  "product_type": "Footwear",
+  "handle": "merino-wool-runner",
+  "status": "active",
+  "published_scope": "web",
+  "tags": "footwear, wool, restock",
+  "template_suffix": null,
+  "created_at": "2026-09-14T08:00:00-04:00",
+  "updated_at": "2026-09-14T12:15:30-04:00",
+  "published_at": "2026-09-14T08:00:00-04:00",
+  "variants": [
+    {
+      "id": 642667041472713700,
+      "product_id": 788032119674292900,
+      "title": "US 9 / Grey",
+      "sku": "MWR-9-GRY",
+      "price": "104.00",
+      "compare_at_price": null,
+      "position": 1,
+      "inventory_policy": "deny",
+      "inventory_management": "shopify",
+      "inventory_quantity": 58,
+      "old_inventory_quantity": 42,
+      "fulfillment_service": "manual",
+      "taxable": true,
+      "requires_shipping": true,
+      "barcode": "0123456789012",
+      "grams": 500,
+      "weight": 1,
+      "weight_unit": "lb",
+      "created_at": "2026-09-14T08:00:00-04:00",
+      "updated_at": "2026-09-14T12:15:30-04:00"
+    }
+  ],
+  "options": [
+    {
+      "id": 594680422498013000,
+      "product_id": 788032119674292900,
+      "name": "Size",
+      "position": 1,
+      "values": [
+        "US 9",
+        "US 10"
+      ]
+    }
+  ],
+  "images": [
+    {
+      "id": 850703190,
+      "product_id": 788032119674292900,
+      "position": 1,
+      "src": "https://cdn.shopify.com/s/files/1/0001/0001/products/merino-wool-runner.jpg",
+      "width": 1200,
+      "height": 1200,
+      "variant_ids": [
+        642667041472713700
+      ],
+      "created_at": "2026-09-14T08:00:00-04:00",
+      "updated_at": "2026-09-14T08:00:00-04:00",
+      "admin_graphql_api_id": "gid://shopify/ProductImage/850703190"
+    }
+  ]
+}

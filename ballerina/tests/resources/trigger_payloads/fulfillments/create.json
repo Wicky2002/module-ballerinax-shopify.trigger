@@ -1,0 +1,42 @@
+{
+  "id": 255858046,
+  "admin_graphql_api_id": "gid://shopify/Fulfillment/255858046",
+  "order_id": 450789469,
+  "status": "pending",
+  "shipment_status": null,
+  "service": "manual",
+  "location_id": 24826418,
+  "email": "jane.doe@example.com",
+  "name": "#1001.1",
+  "tracking_company": null,
+  "tracking_number": null,
+  "tracking_numbers": [],
+  "tracking_url": null,
+  "tracking_urls": [],
+  "created_at": "2026-09-14T13:05:19-04:00",
+  "updated_at": "2026-09-14T13:05:19-04:00",
+  "line_items": [
+    {
+      "id": 866550311766439000,
+      "variant_id": 642667041472713700,
+      "product_id": 788032119674292900,
+      "title": "Merino Wool Runner",
+      "variant_title": "US 9 / Grey",
+      "sku": "MWR-9-GRY",
+      "vendor": "Example Store",
+      "quantity": 1,
+      "price": "98.00",
+      "grams": 500,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "Merino Wool Runner - US 9 / Grey",
+      "fulfillment_service": "manual",
+      "fulfillment_status": "pending",
+      "fulfillable_quantity": 1,
+      "total_discount": "0.00",
+      "product_exists": true,
+      "variant_inventory_management": "shopify"
+    }
+  ]
+}
