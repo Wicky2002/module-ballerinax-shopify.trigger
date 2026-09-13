@@ -1,0 +1,10 @@
+[package]
+distribution = "2201.13.0"
+org = "ballerinax"
+name = "shopify.trigger"
+version = "0.1.0"
+license = ["Apache-2.0"]
+authors = ["Ballerina"]
+keywords = ["Area/Commerce & eCommerce", "Vendor/Shopify", "Cost/Paid", "Type/Trigger"]
+icon = "icon.png"
+repository = "https://github.com/ballerina-platform/module-ballerinax-shopify.trigger"
