@@ -8,3 +8,4 @@ authors = ["Ballerina"]
 keywords = ["Area/Commerce & eCommerce", "Vendor/Shopify", "Cost/Paid", "Type/Trigger"]
 icon = "icon.png"
 repository = "https://github.com/ballerina-platform/module-ballerinax-shopify.trigger"
+include = ["metadata/**"]

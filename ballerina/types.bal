@@ -16,7 +16,7 @@
 
 # Configuration for the webhook listener, including the secret used to verify incoming requests.
 public type ListenerConfig record {
-    # Webhook Secret
+    # The secret used to verify incoming webhook signatures.
     string webhookSecret?;
 };
 
