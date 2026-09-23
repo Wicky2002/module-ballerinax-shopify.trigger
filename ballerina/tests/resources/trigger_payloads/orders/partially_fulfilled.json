@@ -41,6 +41,80 @@
   "order_status_url": "https://example-store.myshopify.com/orders/b1946ac92492d2347c6235b4d2611184",
   "tags": "",
   "note": null,
+  "line_items": [
+    {
+      "id": 866550311766439000,
+      "variant_id": 642667041472713700,
+      "product_id": 788032119674292900,
+      "title": "Merino Wool Runner",
+      "variant_title": "US 9 / Grey",
+      "sku": "MWR-9-GRY",
+      "vendor": "Example Store",
+      "quantity": 1,
+      "price": "98.00",
+      "grams": 500,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "Merino Wool Runner - US 9 / Grey",
+      "fulfillment_service": "manual",
+      "variant_inventory_management": "shopify",
+      "product_exists": true,
+      "fulfillable_quantity": 0,
+      "total_discount": "0.00",
+      "fulfillment_status": "fulfilled"
+    },
+    {
+      "id": 466157049,
+      "variant_id": 39072856,
+      "product_id": 632910392,
+      "title": "IPod Nano - 8GB",
+      "variant_title": "Green",
+      "sku": "IPOD2008GREEN",
+      "vendor": "Apple",
+      "quantity": 1,
+      "price": "499.00",
+      "grams": 500,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "IPod Nano - 8GB - Green",
+      "fulfillment_service": "manual",
+      "variant_inventory_management": "shopify",
+      "product_exists": true,
+      "fulfillable_quantity": 1,
+      "total_discount": "0.00"
+    }
+  ],
+  "shipping_lines": [
+    {
+      "code": "Standard",
+      "price": "0.00",
+      "discounted_price": "0.00",
+      "source": "shopify",
+      "title": "Standard Shipping"
+    }
+  ],
+  "tax_lines": [
+    {
+      "title": "Estimated Tax",
+      "price": "1.94",
+      "rate": 0.05,
+      "channel_liable": true
+    }
+  ],
+  "fulfillments": [
+    {
+      "id": 255858046,
+      "order_id": 450789469,
+      "status": "pending",
+      "service": "manual",
+      "location_id": 24826418,
+      "created_at": "2026-09-14T13:05:19-04:00",
+      "updated_at": "2026-09-14T13:05:19-04:00",
+      "name": "#1001.1"
+    }
+  ],
   "customer": {
     "id": 207119551,
     "email": "jane.doe@example.com",

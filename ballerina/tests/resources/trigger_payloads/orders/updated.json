@@ -41,6 +41,46 @@
   "order_status_url": "https://example-store.myshopify.com/orders/b1946ac92492d2347c6235b4d2611184",
   "tags": "priority",
   "note": "Leave parcel with concierge.",
+  "line_items": [
+    {
+      "id": 466157049,
+      "variant_id": 39072856,
+      "product_id": 632910392,
+      "title": "IPod Nano - 8GB",
+      "variant_title": "Green",
+      "sku": "IPOD2008GREEN",
+      "vendor": "Apple",
+      "quantity": 1,
+      "price": "597.00",
+      "grams": 1000,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "IPod Nano - 8GB - Green",
+      "fulfillment_service": "manual",
+      "variant_inventory_management": "shopify",
+      "product_exists": true,
+      "fulfillable_quantity": 1,
+      "total_discount": "0.00"
+    }
+  ],
+  "shipping_lines": [
+    {
+      "code": "Standard",
+      "price": "0.00",
+      "discounted_price": "0.00",
+      "source": "shopify",
+      "title": "Standard Shipping"
+    }
+  ],
+  "tax_lines": [
+    {
+      "title": "Estimated Tax",
+      "price": "1.94",
+      "rate": 0.05,
+      "channel_liable": true
+    }
+  ],
   "customer": {
     "id": 207119551,
     "email": "jane.doe@example.com",

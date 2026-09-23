@@ -41,6 +41,67 @@
   "order_status_url": "https://example-store.myshopify.com/orders/b1946ac92492d2347c6235b4d2611184",
   "tags": "",
   "note": "Customer requested cancellation.",
+  "line_items": [
+    {
+      "id": 466157049,
+      "variant_id": 39072856,
+      "product_id": 632910392,
+      "title": "IPod Nano - 8GB",
+      "variant_title": "Green",
+      "sku": "IPOD2008GREEN",
+      "vendor": "Apple",
+      "quantity": 1,
+      "price": "597.00",
+      "grams": 1000,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "IPod Nano - 8GB - Green",
+      "fulfillment_service": "manual",
+      "variant_inventory_management": "shopify",
+      "product_exists": true,
+      "fulfillable_quantity": 0,
+      "total_discount": "0.00"
+    }
+  ],
+  "shipping_lines": [
+    {
+      "code": "Standard",
+      "price": "0.00",
+      "discounted_price": "0.00",
+      "source": "shopify",
+      "title": "Standard Shipping"
+    }
+  ],
+  "tax_lines": [
+    {
+      "title": "Estimated Tax",
+      "price": "1.94",
+      "rate": 0.05,
+      "channel_liable": true
+    }
+  ],
+  "refunds": [
+    {
+      "id": 509562969,
+      "order_id": 450789469,
+      "created_at": "2026-09-14T11:03:10-04:00",
+      "note": "Order cancelled and refunded.",
+      "user_id": null,
+      "processed_at": "2026-09-14T11:03:10-04:00",
+      "refund_line_items": [
+        {
+          "id": 104689539,
+          "line_item_id": 466157049,
+          "quantity": 1,
+          "restock_type": "cancel",
+          "location_id": 24826418,
+          "subtotal": 597.00,
+          "total_tax": 1.94
+        }
+      ]
+    }
+  ],
   "customer": {
     "id": 207119551,
     "email": "jane.doe@example.com",
