@@ -15,9 +15,12 @@
 // under the License.
 
 import ballerina/crypto;
+import ballerina/data.jsondata;
 import ballerina/http;
 import ballerina/log;
 import ballerinax/asyncapi.native.handler;
+
+final readonly & map<typedesc<GenericDataType>> EVENT_PAYLOAD_TYPES = {"orders/fulfilled": OrderEvent, "orders/partially_fulfilled": OrderEvent, "orders/cancelled": OrderEvent, "orders/create": OrderEvent, "orders/updated": OrderEvent, "orders/paid": OrderEvent, "products/update": ProductEvent, "products/create": ProductEvent, "customers_marketing_consent/update": CustomerEvent, "customers/enable": CustomerEvent, "customers/update": CustomerEvent, "customers/disable": CustomerEvent, "customers/create": CustomerEvent, "fulfillments/create": FulfillmentEvent, "fulfillments/update": FulfillmentEvent};
 
 service class DispatcherService {
     *http:Service;
@@ -43,6 +46,17 @@ service class DispatcherService {
         _ = self.services.remove(serviceType);
     }
 
+    private isolated function parseEventPayload(json payload, string eventKey, string? fallbackKey = ()) returns GenericDataType|error {
+        typedesc<GenericDataType>? targetType = EVENT_PAYLOAD_TYPES[eventKey];
+        if targetType is () && fallbackKey is string {
+            targetType = EVENT_PAYLOAD_TYPES[fallbackKey];
+        }
+        if targetType is () {
+            return error(string `Unrecognized event identifier: ${eventKey}`);
+        }
+        return jsondata:parseAsType(payload, {allowDataProjection: {nilAsOptionalField: true, absentAsNilableType: true}}, targetType);
+    }
+
     resource function post .(http:Caller caller, http:Request request) returns error? {
         error? verifyResult = self.verifyWebhookSignature(request, self.webhookSecret);
         if verifyResult is error {
@@ -60,7 +74,7 @@ service class DispatcherService {
             return;
         }
         string eventType = eventTypeResult;
-        GenericDataType genericDataType = check payload.cloneWithType(GenericDataType);
+        GenericDataType genericDataType = check self.parseEventPayload(payload, eventType);
         http:Response ackResponse = new;
         ackResponse.statusCode = http:STATUS_OK;
         check caller->respond(ackResponse);
