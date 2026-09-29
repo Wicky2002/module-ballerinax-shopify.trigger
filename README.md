@@ -29,23 +29,97 @@ over the internet to deliver webhook payloads to.
 Use this flow to test your webhook handling logic on your own machine before deploying anywhere,
 using [ngrok](https://ngrok.com/) to expose your local listener to the internet.
 
-1. [Create a Shopify Partner account](https://www.shopify.com/partners) if you don't already have one,
-   and create a development store from the Partner Dashboard to trigger real test events against.
-2. Create a custom app for that store (**Settings > Apps and sales channels > Develop apps**), and
-   configure a webhook subscription under the app's **Webhooks** section for each topic you want to
-   receive (e.g. `orders/create`).
-3. Install [ngrok](https://ngrok.com/) and start a tunnel on port `8090` (the default port for the
-   Ballerina listener):
+#### Step 1: Create a Shopify Partner Account and Development Store
+
+1. [Sign up for a Shopify Partner account](https://www.shopify.com/partners) if you don't already
+   have one.
+2. From the Partner Dashboard, go to **Stores > Create store > Dev** and create a development store.
+   Turning on **Generate test data for store** is worth it - it preloads sample products and a bogus
+   payment gateway, so you have real data to trigger events against right away.
+
+   <img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/shopify-dev-store.png" alt="A newly created Shopify development store's admin dashboard" width="600">
+
+#### Step 2: Create a Custom App
+
+Shopify's older "legacy custom apps" flow (configured directly under a store's Settings) has been
+retired - apps are now created and managed through the **Dev Dashboard**, and webhook subscriptions
+are declared as config rather than filled into a form.
+
+1. From the Partner Dashboard, go to **Apps > Create app**, give it a name, and leave the app URL as
+   a placeholder (e.g. `https://example.com`) - it's only relevant for an app with a real embedded UI,
+   which this test app doesn't need.
+
+   <img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/app-create-1.png" alt="Shopify Dev Dashboard's App development landing page" width="600">
+   <img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/app-create-2.png" alt="Creating a new app in the Shopify Dev Dashboard" width="600">
+
+2. Install the [Shopify CLI](https://shopify.dev/docs/api/shopify-cli) (no global install needed -
+   `npx shopify` works directly) and link a local project to the app you just created:
 
    ```sh
-   ngrok http 8090
+   npx shopify app config link
    ```
 
-   Use the HTTPS forwarding URL ngrok prints as the webhook endpoint URL when configuring each topic
-   subscription in Shopify.
-4. Shopify signs every webhook delivery with your app's **Client Secret**, using HMAC-SHA256 over the
-   raw request body. Copy the Client Secret from the app's **API credentials** page - this is the
-   value the listener calls `webhookSecret`.
+   This logs you into the Shopify CLI (opens a browser) and prompts you to select your organization
+   and the app to link to. It generates a `shopify.app.toml` file in the current directory.
+
+#### Step 3: Set Up ngrok
+
+The Ballerina listener runs locally and needs a publicly accessible URL so Shopify can deliver
+webhook events to it. [ngrok](https://ngrok.com/) creates a secure tunnel from a public URL to your
+local service.
+
+Install ngrok and start a tunnel on port `8090` (the default port for the Ballerina listener):
+
+```sh
+ngrok http 8090
+```
+
+<img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/ngrok-forwarding.png" alt="ngrok forwarding a public URL to localhost:8090" width="600">
+
+> **Save this value** - you will need the ngrok URL in the next step.
+
+#### Step 4: Subscribe to Webhook Topics
+
+Add the topics you want to receive to `shopify.app.toml`, pointing at your ngrok URL, and declare
+the access scope each topic needs (e.g. `products/create` needs `read_products`):
+
+```toml
+[access_scopes]
+scopes = "read_products"
+
+[[webhooks.subscriptions]]
+topics = ["products/create"]
+uri = "https://<your-ngrok-url>"
+```
+
+> Some topics (e.g. anything under `orders/*` or `customers/*`) touch protected customer data and
+> require Shopify's separate data-access approval before you can subscribe to them - see
+> [Protected customer data](https://shopify.dev/docs/apps/launch/protected-customer-data) if you hit
+> that. `products/*` and `fulfillments/*` don't have this restriction, and are the simplest topics to
+> test locally.
+
+Deploy the config and install the app on your development store:
+
+```sh
+npx shopify app deploy
+```
+
+Once deployed, confirm the subscription is live from the app's **Versions** page in the Dev
+Dashboard:
+
+<img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/webhook-endpoint-config.png" alt="A deployed app version showing an active products/create webhook subscription pointed at the ngrok URL" width="600">
+
+#### Step 5: Retrieve the Client Secret
+
+Shopify signs every webhook delivery with your app's **Client Secret**, using HMAC-SHA256 over the
+raw request body.
+
+1. Go to the app's **App settings** page in the Dev Dashboard and reveal the **Client secret**.
+
+   <img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/webhook-verifier-token.png" alt="Shopify Dev Dashboard app settings page with the Client ID and Client secret fields (value hidden)" width="600">
+
+> **Save this value** - you will need it in the Quickstart section when initialising the Ballerina
+> listener. This is the value the listener calls `webhookSecret`.
 
 ### Production / business integration
 
@@ -53,10 +127,14 @@ The steps above use ngrok's temporary URL, which is fine for local testing but n
 deployment. For production use:
 
 1. Deploy your Ballerina service somewhere with a stable, internet-reachable HTTPS URL.
-2. Update each webhook topic subscription's endpoint URL to your production URL instead of the ngrok
-   URL.
+2. Update the `uri` in each `[[webhooks.subscriptions]]` block in `shopify.app.toml` to your
+   production URL instead of the ngrok URL, and run `shopify app deploy` again to push the change
+   live.
 3. Rather than hardcoding `webhookSecret` as shown in the Quickstart, inject it via `Config.toml` (or
    your platform's equivalent configuration/secret mechanism), since it's a `configurable` value.
+4. If you need topics under `orders/*` or `customers/*`, request Shopify's protected customer data
+   approval before going live - see
+   [Protected customer data](https://shopify.dev/docs/apps/launch/protected-customer-data).
 
 ### Compatibility
 
@@ -104,8 +182,11 @@ service shopify:OrdersService on shopifyWebhook {
 A service attached to a listener's service type must implement **all** of that type's remote
 functions - see [`ballerina/README.md`](ballerina/README.md) for the full Quickstart walkthrough.
 
-To verify it is working, go to your **Shopify development store** and create an order. You should see
-the event printed in the Ballerina console output.
+To verify it is working, go to your **Shopify development store** and create an order (or whichever
+resource matches the topic you subscribed to). You should see the event printed in the Ballerina
+console output.
+
+<img src="https://raw.githubusercontent.com/ballerina-platform/module-ballerinax-shopify.trigger/main/docs/setup/resources/webhook-confirmed.png" alt="Ballerina console output showing a real Shopify webhook event dispatched successfully" width="600">
 
 ## Examples
 
