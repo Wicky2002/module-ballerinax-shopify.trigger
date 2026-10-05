@@ -45,7 +45,11 @@ Topic: `orders/create`. Status: corrected — fixture was completely missing `li
 parts of every real order payload. Added a representative line item, shipping line, and
 tax line consistent with the existing totals.
 Source: https://shopify.dev/docs/api/admin-rest/latest/resources/order (order webhooks
-send the full current order state, identical in shape to the order resource)
+send the full current order state, identical in shape to the order resource).
+Also: `billing_address`/`shipping_address` carry numeric `latitude`/`longitude`. The type (number, not
+the string shown in Shopify's docs) comes from a real `orders/create` delivery captured from a
+dev store on 2026-10-05; the values are placeholders for this fixture's Ottawa address, and the
+captured customer data was not committed.
 
 ## orders/updated.json
 Topic: `orders/updated`. Status: corrected — same missing `line_items` /
@@ -68,7 +72,8 @@ Source: https://shopify.dev/docs/api/admin-rest/latest/resources/order
 ## orders/paid.json
 Topic: `orders/paid`. Status: corrected — added `line_items`, `shipping_lines`,
 `tax_lines` (line item left unfulfilled, consistent with the pre-existing
-`fulfillment_status: null`).
+`fulfillment_status: null`). Addresses carry numeric `latitude`/`longitude`, as in
+`orders/create.json` above.
 Source: https://shopify.dev/docs/api/admin-rest/latest/resources/order
 
 ## orders/partially_fulfilled.json

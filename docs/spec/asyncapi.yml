@@ -1078,11 +1078,15 @@ components:
           type: string
           description: The last name of the person associated with the payment method.
         latitude:
-          type: string
-          description: The latitude of the billing address.
+          oneOf:
+            - type: string
+            - type: number
+          description: The latitude of the billing address. Shopify sends a number although its documentation shows a string.
         longitude:
-          type: string
-          description: The longitude of the billing address.
+          oneOf:
+            - type: string
+            - type: number
+          description: The longitude of the billing address. Shopify sends a number although its documentation shows a string.
         name:
           type: string
           description: The full name of the person associated with the payment method.

@@ -1394,10 +1394,10 @@ public type CustomerAddress record {
     # The last name of the person associated with the payment method.
     @jsondata:Name {value: "last_name"}
     string lastName?;
-    # The latitude of the billing address.
-    string latitude?;
-    # The longitude of the billing address.
-    string longitude?;
+    # The latitude of the billing address. Shopify sends a number although its documentation shows a string.
+    Latitude latitude?;
+    # The longitude of the billing address. Shopify sends a number although its documentation shows a string.
+    Longitude longitude?;
     # The full name of the person associated with the payment method.
     string name?;
     # The phone number at the billing address.
@@ -1410,6 +1410,10 @@ public type CustomerAddress record {
     # The postal code (for example, zip, postcode, or Eircode) of the billing address.
     string zip?;
 };
+
+public type Latitude string|decimal;
+
+public type Longitude string|decimal;
 
 # The union of every possible webhook payload type this listener can receive.
 public type GenericDataType Metafield|Address|OrderAdjustment|Customer|TotalTaxSet|ProductImage|DiscountApplication|PriceSet|PaymentTerms|DiscountedPriceSet|TaxLine|CustomerEvent|TotalPriceSet|TotalLineItemsPriceSet|TotalDiscountSet|PresentmentPrices|ProductVariant|FulfillmentEvent|Property|RefundLineItem|ProductEvent|ProductOption|TotalShippingPriceSet|Receipt|CurrentTotalDutiesSet|PaymentSchedule|ShippingLine|TotalDiscountsSet|LineItem|DiscountCode|CurrentTotalDutiesSetObject|NoteAttribute|Fulfillment|OriginalTotalDutiesSetObject|SmsMarketingConsent|Refund|Price|AmountSet|OrderEvent|OriginalTotalDutiesSet|OrderLineItem|Option|PresentmentPrice|SubtotalPriceSet|DiscountAllocations|CustomerAddress;

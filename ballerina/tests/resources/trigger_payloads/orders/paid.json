@@ -108,7 +108,9 @@
     "country": "Canada",
     "country_code": "CA",
     "zip": "K2P0V6",
-    "phone": "+16135551212"
+    "phone": "+16135551212",
+    "latitude": 45.41634,
+    "longitude": -75.6868
   },
   "shipping_address": {
     "first_name": "Jane",
@@ -122,6 +124,8 @@
     "country": "Canada",
     "country_code": "CA",
     "zip": "K2P0V6",
-    "phone": "+16135551212"
+    "phone": "+16135551212",
+    "latitude": 45.41634,
+    "longitude": -75.6868
   }
 }

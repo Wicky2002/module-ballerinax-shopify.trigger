@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- [Order webhooks with a geocoded billing or shipping address no longer fail to bind](https://github.com/wso2/product-integrator/issues/148). `latitude` and `longitude` are now `string|decimal`, because Shopify sends them as numbers although its documentation shows strings.
 
 ## [0.2.0] - 2026-09-28
 ### Changed
