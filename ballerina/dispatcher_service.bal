@@ -15,12 +15,9 @@
 // under the License.
 
 import ballerina/crypto;
-import ballerina/data.jsondata;
 import ballerina/http;
 import ballerina/log;
 import ballerinax/asyncapi.native.handler;
-
-final readonly & map<typedesc<GenericDataType>> EVENT_PAYLOAD_TYPES = {"orders/fulfilled": OrderEvent, "orders/partially_fulfilled": OrderEvent, "orders/cancelled": OrderEvent, "orders/create": OrderEvent, "orders/updated": OrderEvent, "orders/paid": OrderEvent, "products/update": ProductEvent, "products/create": ProductEvent, "customers_marketing_consent/update": CustomerEvent, "customers/enable": CustomerEvent, "customers/update": CustomerEvent, "customers/disable": CustomerEvent, "customers/create": CustomerEvent, "fulfillments/create": FulfillmentEvent, "fulfillments/update": FulfillmentEvent};
 
 service class DispatcherService {
     *http:Service;
@@ -46,17 +43,6 @@ service class DispatcherService {
         _ = self.services.remove(serviceType);
     }
 
-    private isolated function parseEventPayload(json payload, string eventKey, string? fallbackKey = ()) returns GenericDataType|error {
-        typedesc<GenericDataType>? targetType = EVENT_PAYLOAD_TYPES[eventKey];
-        if targetType is () && fallbackKey is string {
-            targetType = EVENT_PAYLOAD_TYPES[fallbackKey];
-        }
-        if targetType is () {
-            return error(string `Unrecognized event identifier: ${eventKey}`);
-        }
-        return jsondata:parseAsType(payload, {allowDataProjection: {nilAsOptionalField: true, absentAsNilableType: true}}, targetType);
-    }
-
     resource function post .(http:Caller caller, http:Request request) returns error? {
         error? verifyResult = self.verifyWebhookSignature(request, self.webhookSecret);
         if verifyResult is error {
@@ -74,13 +60,14 @@ service class DispatcherService {
             return;
         }
         string eventType = eventTypeResult;
-        GenericDataType genericDataType = check self.parseEventPayload(payload, eventType);
         http:Response ackResponse = new;
         ackResponse.statusCode = http:STATUS_OK;
         check caller->respond(ackResponse);
-        error? dispatchResult = self.matchRemoteFunc(genericDataType, eventType);
+        boolean|error dispatchResult = self.matchRemoteFunc(payload, eventType);
         if dispatchResult is error {
             log:printError("DISPATCH_FAILED", dispatchResult);
+        } else if !dispatchResult {
+            log:printWarn("NO_HANDLER_FOR_EVENT", eventIdentifier = eventType);
         }
     }
 
@@ -108,82 +95,113 @@ service class DispatcherService {
         }
     }
 
-    private isolated function matchRemoteFunc(GenericDataType genericDataType, string eventType) returns error? {
-        check self.matchRemoteFuncForOrders(genericDataType, eventType);
-        check self.matchRemoteFuncForProducts(genericDataType, eventType);
-        check self.matchRemoteFuncForCustomers(genericDataType, eventType);
-        check self.matchRemoteFuncForFulfillments(genericDataType, eventType);
+    private isolated function matchRemoteFunc(json payload, string eventType) returns boolean|error {
+        if check self.matchRemoteFuncForOrders(payload, eventType) {
+            return true;
+        }
+        if check self.matchRemoteFuncForProducts(payload, eventType) {
+            return true;
+        }
+        if check self.matchRemoteFuncForCustomers(payload, eventType) {
+            return true;
+        }
+        if check self.matchRemoteFuncForFulfillments(payload, eventType) {
+            return true;
+        }
+        return false;
     }
 
-    private isolated function matchRemoteFuncForOrders(GenericDataType genericDataType, string eventIdentifier) returns error? {
+    private isolated function matchRemoteFuncForOrders(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
             "orders/fulfilled" => {
-                check self.executeRemoteFunc(genericDataType, "orders/fulfilled", "OrdersService", "onOrdersFulfilled");
+                check self.executeRemoteFunc(payload, "orders/fulfilled", "OrdersService", "onOrdersFulfilled");
+                return true;
             }
             "orders/partially_fulfilled" => {
-                check self.executeRemoteFunc(genericDataType, "orders/partially_fulfilled", "OrdersService", "onOrdersPartiallyFulfilled");
+                check self.executeRemoteFunc(payload, "orders/partially_fulfilled", "OrdersService", "onOrdersPartiallyFulfilled");
+                return true;
             }
             "orders/cancelled" => {
-                check self.executeRemoteFunc(genericDataType, "orders/cancelled", "OrdersService", "onOrdersCancelled");
+                check self.executeRemoteFunc(payload, "orders/cancelled", "OrdersService", "onOrdersCancelled");
+                return true;
             }
             "orders/create" => {
-                check self.executeRemoteFunc(genericDataType, "orders/create", "OrdersService", "onOrdersCreate");
+                check self.executeRemoteFunc(payload, "orders/create", "OrdersService", "onOrdersCreate");
+                return true;
             }
             "orders/updated" => {
-                check self.executeRemoteFunc(genericDataType, "orders/updated", "OrdersService", "onOrdersUpdated");
+                check self.executeRemoteFunc(payload, "orders/updated", "OrdersService", "onOrdersUpdated");
+                return true;
             }
             "orders/paid" => {
-                check self.executeRemoteFunc(genericDataType, "orders/paid", "OrdersService", "onOrdersPaid");
+                check self.executeRemoteFunc(payload, "orders/paid", "OrdersService", "onOrdersPaid");
+                return true;
             }
         }
+        return false;
     }
 
-    private isolated function matchRemoteFuncForProducts(GenericDataType genericDataType, string eventIdentifier) returns error? {
+    private isolated function matchRemoteFuncForProducts(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
             "products/update" => {
-                check self.executeRemoteFunc(genericDataType, "products/update", "ProductsService", "onProductsUpdate");
+                check self.executeRemoteFunc(payload, "products/update", "ProductsService", "onProductsUpdate");
+                return true;
             }
             "products/create" => {
-                check self.executeRemoteFunc(genericDataType, "products/create", "ProductsService", "onProductsCreate");
+                check self.executeRemoteFunc(payload, "products/create", "ProductsService", "onProductsCreate");
+                return true;
             }
         }
+        return false;
     }
 
-    private isolated function matchRemoteFuncForCustomers(GenericDataType genericDataType, string eventIdentifier) returns error? {
+    private isolated function matchRemoteFuncForCustomers(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
             "customers_marketing_consent/update" => {
-                check self.executeRemoteFunc(genericDataType, "customers_marketing_consent/update", "CustomersService", "onCustomersMarketingConsentUpdate");
+                check self.executeRemoteFunc(payload, "customers_marketing_consent/update", "CustomersService", "onCustomersMarketingConsentUpdate");
+                return true;
             }
             "customers/enable" => {
-                check self.executeRemoteFunc(genericDataType, "customers/enable", "CustomersService", "onCustomersEnable");
+                check self.executeRemoteFunc(payload, "customers/enable", "CustomersService", "onCustomersEnable");
+                return true;
             }
             "customers/update" => {
-                check self.executeRemoteFunc(genericDataType, "customers/update", "CustomersService", "onCustomersUpdate");
+                check self.executeRemoteFunc(payload, "customers/update", "CustomersService", "onCustomersUpdate");
+                return true;
             }
             "customers/disable" => {
-                check self.executeRemoteFunc(genericDataType, "customers/disable", "CustomersService", "onCustomersDisable");
+                check self.executeRemoteFunc(payload, "customers/disable", "CustomersService", "onCustomersDisable");
+                return true;
             }
             "customers/create" => {
-                check self.executeRemoteFunc(genericDataType, "customers/create", "CustomersService", "onCustomersCreate");
+                check self.executeRemoteFunc(payload, "customers/create", "CustomersService", "onCustomersCreate");
+                return true;
             }
         }
+        return false;
     }
 
-    private isolated function matchRemoteFuncForFulfillments(GenericDataType genericDataType, string eventIdentifier) returns error? {
+    private isolated function matchRemoteFuncForFulfillments(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
             "fulfillments/create" => {
-                check self.executeRemoteFunc(genericDataType, "fulfillments/create", "FulfillmentsService", "onFulfillmentsCreate");
+                check self.executeRemoteFunc(payload, "fulfillments/create", "FulfillmentsService", "onFulfillmentsCreate");
+                return true;
             }
             "fulfillments/update" => {
-                check self.executeRemoteFunc(genericDataType, "fulfillments/update", "FulfillmentsService", "onFulfillmentsUpdate");
+                check self.executeRemoteFunc(payload, "fulfillments/update", "FulfillmentsService", "onFulfillmentsUpdate");
+                return true;
             }
         }
+        return false;
     }
 
-    private isolated function executeRemoteFunc(GenericDataType genericEvent, string eventName, string serviceTypeStr, string eventFunction) returns error? {
+    private isolated function executeRemoteFunc(json payload, string eventName, string serviceTypeStr, string eventFunction) returns error? {
         GenericServiceType? genericService = self.services[serviceTypeStr];
         if genericService is GenericServiceType {
-            check self.nativeHandler.invokeRemoteFunction(genericEvent, eventName, eventFunction, genericService);
+            any boundEvent = check self.nativeHandler.bindEventPayload(genericService, eventFunction, payload);
+            check self.nativeHandler.invokeRemoteFunction(boundEvent, eventName, eventFunction, genericService);
+        } else {
+            log:printDebug("SERVICE_NOT_ATTACHED", serviceType = serviceTypeStr, eventName = eventName);
         }
     }
 }
