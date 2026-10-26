@@ -16,56 +16,48 @@
 
 # Attachable service type exposing the OrdersService family of webhook events.
 public type OrdersService service object {
-    # Triggered on Orders fulfilled.
+    # Triggered on Orders create.
     # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onOrdersFulfilled(OrderEvent payload) returns error?;
-
-    # Triggered on Orders partially fulfilled.
-    # + payload - the OrderEvent webhook payload
-    # + return - an error if handling the event fails
-    remote function onOrdersPartiallyFulfilled(OrderEvent payload) returns error?;
+    remote function onOrdersCreate(OrderEvent payload) returns error?;
 
     # Triggered on Orders cancelled.
     # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
     remote function onOrdersCancelled(OrderEvent payload) returns error?;
 
-    # Triggered on Orders create.
+    # Triggered on Orders fulfilled.
     # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onOrdersCreate(OrderEvent payload) returns error?;
-
-    # Triggered on Orders updated.
-    # + payload - the OrderEvent webhook payload
-    # + return - an error if handling the event fails
-    remote function onOrdersUpdated(OrderEvent payload) returns error?;
+    remote function onOrdersFulfilled(OrderEvent payload) returns error?;
 
     # Triggered on Orders paid.
     # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
     remote function onOrdersPaid(OrderEvent payload) returns error?;
-};
 
-# Attachable service type exposing the ProductsService family of webhook events.
-public type ProductsService service object {
-    # Triggered on Products update.
-    # + payload - the ProductEvent webhook payload
+    # Triggered on Orders partially fulfilled.
+    # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onProductsUpdate(ProductEvent payload) returns error?;
+    remote function onOrdersPartiallyFulfilled(OrderEvent payload) returns error?;
 
-    # Triggered on Products create.
-    # + payload - the ProductEvent webhook payload
+    # Triggered on Orders updated.
+    # + payload - the OrderEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onProductsCreate(ProductEvent payload) returns error?;
+    remote function onOrdersUpdated(OrderEvent payload) returns error?;
 };
 
 # Attachable service type exposing the CustomersService family of webhook events.
 public type CustomersService service object {
-    # Triggered on Customers marketing consent update.
+    # Triggered on Customers create.
     # + payload - the CustomerEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onCustomersMarketingConsentUpdate(CustomerEvent payload) returns error?;
+    remote function onCustomersCreate(CustomerEvent payload) returns error?;
+
+    # Triggered on Customers disable.
+    # + payload - the CustomerEvent webhook payload
+    # + return - an error if handling the event fails
+    remote function onCustomersDisable(CustomerEvent payload) returns error?;
 
     # Triggered on Customers enable.
     # + payload - the CustomerEvent webhook payload
@@ -77,15 +69,23 @@ public type CustomersService service object {
     # + return - an error if handling the event fails
     remote function onCustomersUpdate(CustomerEvent payload) returns error?;
 
-    # Triggered on Customers disable.
+    # Triggered on Customers marketing consent update.
     # + payload - the CustomerEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onCustomersDisable(CustomerEvent payload) returns error?;
+    remote function onCustomersMarketingConsentUpdate(CustomerEvent payload) returns error?;
+};
 
-    # Triggered on Customers create.
-    # + payload - the CustomerEvent webhook payload
+# Attachable service type exposing the ProductsService family of webhook events.
+public type ProductsService service object {
+    # Triggered on Products create.
+    # + payload - the ProductEvent webhook payload
     # + return - an error if handling the event fails
-    remote function onCustomersCreate(CustomerEvent payload) returns error?;
+    remote function onProductsCreate(ProductEvent payload) returns error?;
+
+    # Triggered on Products update.
+    # + payload - the ProductEvent webhook payload
+    # + return - an error if handling the event fails
+    remote function onProductsUpdate(ProductEvent payload) returns error?;
 };
 
 # Attachable service type exposing the FulfillmentsService family of webhook events.
@@ -102,5 +102,5 @@ public type FulfillmentsService service object {
 };
 
 # The union of every service type that can be attached to this listener.
-public type GenericServiceType OrdersService|ProductsService|CustomersService|FulfillmentsService;
+public type GenericServiceType OrdersService|CustomersService|ProductsService|FulfillmentsService;
 

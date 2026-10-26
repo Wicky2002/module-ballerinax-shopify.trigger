@@ -25,7 +25,7 @@ service class DispatcherService {
     private handler:NativeHandler nativeHandler = new ();
     private string? webhookSecret;
 
-    function init(string? webhookSecret) {
+    isolated function init(string? webhookSecret) {
         self.webhookSecret = webhookSecret;
     }
 
@@ -99,10 +99,10 @@ service class DispatcherService {
         if check self.matchRemoteFuncForOrders(payload, eventType) {
             return true;
         }
-        if check self.matchRemoteFuncForProducts(payload, eventType) {
+        if check self.matchRemoteFuncForCustomers(payload, eventType) {
             return true;
         }
-        if check self.matchRemoteFuncForCustomers(payload, eventType) {
+        if check self.matchRemoteFuncForProducts(payload, eventType) {
             return true;
         }
         if check self.matchRemoteFuncForFulfillments(payload, eventType) {
@@ -113,42 +113,28 @@ service class DispatcherService {
 
     private isolated function matchRemoteFuncForOrders(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
-            "orders/fulfilled" => {
-                check self.executeRemoteFunc(payload, "orders/fulfilled", "OrdersService", "onOrdersFulfilled");
-                return true;
-            }
-            "orders/partially_fulfilled" => {
-                check self.executeRemoteFunc(payload, "orders/partially_fulfilled", "OrdersService", "onOrdersPartiallyFulfilled");
+            "orders/create" => {
+                check self.executeRemoteFunc(payload, "orders/create", "OrdersService", "onOrdersCreate");
                 return true;
             }
             "orders/cancelled" => {
                 check self.executeRemoteFunc(payload, "orders/cancelled", "OrdersService", "onOrdersCancelled");
                 return true;
             }
-            "orders/create" => {
-                check self.executeRemoteFunc(payload, "orders/create", "OrdersService", "onOrdersCreate");
-                return true;
-            }
-            "orders/updated" => {
-                check self.executeRemoteFunc(payload, "orders/updated", "OrdersService", "onOrdersUpdated");
+            "orders/fulfilled" => {
+                check self.executeRemoteFunc(payload, "orders/fulfilled", "OrdersService", "onOrdersFulfilled");
                 return true;
             }
             "orders/paid" => {
                 check self.executeRemoteFunc(payload, "orders/paid", "OrdersService", "onOrdersPaid");
                 return true;
             }
-        }
-        return false;
-    }
-
-    private isolated function matchRemoteFuncForProducts(json payload, string eventIdentifier) returns boolean|error {
-        match eventIdentifier {
-            "products/update" => {
-                check self.executeRemoteFunc(payload, "products/update", "ProductsService", "onProductsUpdate");
+            "orders/partially_fulfilled" => {
+                check self.executeRemoteFunc(payload, "orders/partially_fulfilled", "OrdersService", "onOrdersPartiallyFulfilled");
                 return true;
             }
-            "products/create" => {
-                check self.executeRemoteFunc(payload, "products/create", "ProductsService", "onProductsCreate");
+            "orders/updated" => {
+                check self.executeRemoteFunc(payload, "orders/updated", "OrdersService", "onOrdersUpdated");
                 return true;
             }
         }
@@ -157,8 +143,12 @@ service class DispatcherService {
 
     private isolated function matchRemoteFuncForCustomers(json payload, string eventIdentifier) returns boolean|error {
         match eventIdentifier {
-            "customers_marketing_consent/update" => {
-                check self.executeRemoteFunc(payload, "customers_marketing_consent/update", "CustomersService", "onCustomersMarketingConsentUpdate");
+            "customers/create" => {
+                check self.executeRemoteFunc(payload, "customers/create", "CustomersService", "onCustomersCreate");
+                return true;
+            }
+            "customers/disable" => {
+                check self.executeRemoteFunc(payload, "customers/disable", "CustomersService", "onCustomersDisable");
                 return true;
             }
             "customers/enable" => {
@@ -169,12 +159,22 @@ service class DispatcherService {
                 check self.executeRemoteFunc(payload, "customers/update", "CustomersService", "onCustomersUpdate");
                 return true;
             }
-            "customers/disable" => {
-                check self.executeRemoteFunc(payload, "customers/disable", "CustomersService", "onCustomersDisable");
+            "customers_marketing_consent/update" => {
+                check self.executeRemoteFunc(payload, "customers_marketing_consent/update", "CustomersService", "onCustomersMarketingConsentUpdate");
                 return true;
             }
-            "customers/create" => {
-                check self.executeRemoteFunc(payload, "customers/create", "CustomersService", "onCustomersCreate");
+        }
+        return false;
+    }
+
+    private isolated function matchRemoteFuncForProducts(json payload, string eventIdentifier) returns boolean|error {
+        match eventIdentifier {
+            "products/create" => {
+                check self.executeRemoteFunc(payload, "products/create", "ProductsService", "onProductsCreate");
+                return true;
+            }
+            "products/update" => {
+                check self.executeRemoteFunc(payload, "products/update", "ProductsService", "onProductsUpdate");
                 return true;
             }
         }
