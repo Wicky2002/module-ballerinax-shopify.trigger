@@ -28,13 +28,13 @@ listener shopify:Listener webhookListener = new (config, 8090);
 service shopify:FulfillmentsService on webhookListener {
 
     remote function onFulfillmentsCreate(shopify:FulfillmentEvent payload) returns error? {
-        if payload.tracking_number is () {
-            log:printWarn("Fulfillment created without a tracking number", id = payload.id,
-                    orderId = payload.order_id);
+        if payload?.trackingNumber is () {
+            log:printWarn("Fulfillment created without a tracking number", id = payload?.id,
+                    orderId = payload?.orderId);
             return;
         }
-        log:printInfo("Fulfillment created", id = payload.id, orderId = payload.order_id,
-                trackingNumber = payload.tracking_number);
+        log:printInfo("Fulfillment created", id = payload?.id, orderId = payload?.orderId,
+                trackingNumber = payload?.trackingNumber);
     }
 
     remote function onFulfillmentsUpdate(shopify:FulfillmentEvent payload) returns error? {
