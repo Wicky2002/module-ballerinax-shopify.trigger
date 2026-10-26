@@ -32,6 +32,8 @@ rootProject.name = 'module-ballerinax-shopify.trigger'
 include ':shopify.trigger-ballerina'
 
 project(':shopify.trigger-ballerina').projectDir = file("ballerina")
+include ':shopify.trigger-compiler-plugin'
+project(':shopify.trigger-compiler-plugin').projectDir = file("compiler-plugin")
 
 develocity {
     buildScan {
