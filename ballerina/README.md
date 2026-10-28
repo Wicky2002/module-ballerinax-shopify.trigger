@@ -83,28 +83,36 @@ https://xxxx-xxx-xxx-xxx.ngrok-free.app
 #### Step 4: Subscribe to webhook topics
 
 Add the topics you want to receive to `shopify.app.toml`, pointing at your ngrok URL from Step 3,
-and declare the access scope each topic needs (e.g. `products/create` needs `read_products`):
+and declare the access scope each topic needs (e.g. `products/create` needs `read_products`). Keep
+the `[webhooks]` table and its `api_version` that `app config link` wrote; Shopify requires it:
 
 ```toml
 [access_scopes]
 scopes = "read_products"
 
+[webhooks]
+api_version = "<the version app config link wrote>"
+
 [[webhooks.subscriptions]]
 topics = ["products/create"]
-uri = "https://<your-ngrok-url>"
+uri = "<your ngrok URL, e.g. https://abc123.ngrok-free.app>"
 ```
 
 > Some topics (e.g. anything under `orders/*` or `customers/*`) touch protected customer data and
 > require Shopify's separate data-access approval before you can subscribe to them - see
 > [Protected customer data](https://shopify.dev/docs/apps/launch/protected-customer-data) if you hit
-> that error. `products/*` and `fulfillments/*` don't have this restriction, and are the simplest
-> topics to test locally.
+> that error. Fulfillment topics can also count as protected customer data, since they carry the
+> customer's email and shipping destination. `products/*` has no such restriction and is the
+> simplest topic to test locally.
 
-Deploy the config, which also installs the app on your development store:
+Deploy the config:
 
 ```sh
 npx shopify app deploy
 ```
+
+Deploying doesn't install the app. Install it on your development store from the app's page in the
+Dev Dashboard (**Install app**, then pick the development store).
 
 Confirm the subscription is live from the app's **Versions** page in the Dev Dashboard:
 

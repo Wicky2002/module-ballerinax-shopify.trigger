@@ -10,13 +10,14 @@ This document records the sanitation done on top of the AsyncAPI specification f
 1. The event identifier is `x-ballerina-event-identifier: {type: header, name: "X-Shopify-Topic"}`. An earlier version of this spec had it as `type: body, path: "x-shopify-topic"` instead — wrong, since Shopify actually sends the topic as a request header, not a body field. That mistake also exposed a real generator bug (a hyphenated body-path segment produced uncompilable dot-notation source): filed as `ballerina-platform/ballerina-library#9157`, fixed in `ballerina-platform/asyncapi-tools#210`. Not currently reachable through this spec since it now correctly uses `type: header`, but worth knowing why the identifier is shaped this way.
 2. Added an `x-ballerina-auth` block for signature verification: HMAC-SHA256 over the raw request body, base64-encoded, checked against `X-Shopify-Hmac-Sha256`. Unlike HubSpot's scheme, nothing beyond the body participates in the signature (no method, URL, or timestamp), so there's no freshness window to configure.
 3. `CustomerAddress.latitude` and `longitude` are declared `oneOf: [string, number]` (generated as `string|decimal`) instead of `string`. Shopify's REST documentation shows them as strings (`"45.41634"`), but real webhook deliveries send numbers (`45.41634`) once an address has been geocoded. Captured from a dev store on 2026-10-05 (`orders/create` and `orders/paid`, both addresses). Typed as `string` the whole payload failed to bind with `incompatible value '45.41634' for type 'string'`, so no handler ran for geocoded orders. Reported in `wso2/product-integrator#148`.
+4. `ProductVariant.weight` is `type: number` (generated as `decimal`) instead of `integer`. Shopify sends variant weights as decimals (for example `0.2` lb), so a product with a fractional weight failed to bind and `products/create`/`products/update` handlers never ran. The `products/update` test payload now carries a fractional weight. Also removed a duplicated `tax_lines:` key nested inside the `LineItem.tax_lines` schema; it had no effect on the generated code.
 
 ## Ballerina trigger generation
 
 The Ballerina trigger source (`listener.bal`, `dispatcher_service.bal`, `service_types.bal`, `types.bal`) is generated from `asyncapi.yml` using the `asyncapi-tools` generator (`ballerina-platform/asyncapi-tools`). The command should be executed from the repository root directory.
 
 ```bash
-bal asyncapi http -i docs/spec/asyncapi.yml -o ballerina/
+bal asyncapi docs/spec/asyncapi.yml --protocol http --with-tests -o ballerina/
 ```
 
 This overwrites `listener.bal`, `dispatcher_service.bal`, `service_types.bal`, and the data-types file in `ballerina/` with fresh output. Diff the result before committing - anything currently correct only because of a hand patch to these files (rather than to the spec or the generator itself) will be silently reverted by this command.
