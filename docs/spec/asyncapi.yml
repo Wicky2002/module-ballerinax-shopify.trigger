@@ -832,7 +832,6 @@ components:
           type: integer
           description: A unique identifier for a quantity of items within a single fulfillment. An order can have multiple fulfillment line items.
         tax_lines:
-          tax_lines:
           type: array
           items:
             $ref: '#/components/schemas/TaxLine'
@@ -1445,7 +1444,7 @@ components:
           type: string
           description: The date and time when the product variant was last modified. Gets returned in ISO 8601 formatting.
         weight:
-          type: integer
+          type: number
           description: The weight of the product variant in the unit system specified with weight_unit.
         weight_unit:
           type: string

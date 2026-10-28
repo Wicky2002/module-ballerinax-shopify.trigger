@@ -23,7 +23,7 @@
     },
     {
       "id": "$customers",
-      "doc": "Receives customer events: created, updated, and deleted.",
+      "doc": "Receives customer events: created, updated, enabled, disabled, and marketing consent updated.",
       "type": { "name": "CustomersService" },
       "concrete": true,
       "multipleListenersAllowed": true,
@@ -31,7 +31,7 @@
     },
     {
       "id": "$products",
-      "doc": "Receives product events: created, updated, and deleted.",
+      "doc": "Receives product events: created and updated.",
       "type": { "name": "ProductsService" },
       "concrete": true,
       "multipleListenersAllowed": true,

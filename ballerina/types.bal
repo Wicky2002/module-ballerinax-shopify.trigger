@@ -1270,7 +1270,7 @@ public type ProductVariant record {
     @jsondata:Name {value: "updated_at"}
     string updatedAt?;
     # The weight of the product variant in the unit system specified with weight_unit.
-    int weight?;
+    decimal weight?;
     # The unit of measurement that applies to the product variant's weight. If you don't specify a value for
     # weight_unit, then the shop's default unit of measurement is applied. Valid values are g, kg, oz, and lb.
     @jsondata:Name {value: "weight_unit"}

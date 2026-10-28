@@ -6,8 +6,14 @@ customers into a downstream CRM or marketing platform.
 ## Prerequisites
 
 Complete the [Setup guide](../../ballerina/README.md#setup-guide) in the package README, subscribing
-to the `customers/create` and `customers/marketing_consent_update` topics, then update
-`webhookSecret` in `Config.toml` with your app's Client Secret.
+to the `customers/create` and `customers_marketing_consent/update` topics.
+
+Then put your app's Client Secret in a `Config.toml` in this directory (keep it out of version control):
+
+```toml
+[config]
+webhookSecret = "<your app's Client Secret>"
+```
 
 ## Run the example
 

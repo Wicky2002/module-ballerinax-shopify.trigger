@@ -6,8 +6,14 @@ paid) as it arrives - the minimal, canonical use case for the `shopify.trigger` 
 ## Prerequisites
 
 Complete the [Setup guide](../../ballerina/README.md#setup-guide) in the package README, subscribing
-to the `orders/*` topics, then update `webhookSecret` in `main.bal` (or externalize it via
-`Config.toml`) with your app's Client Secret.
+to the `orders/*` topics.
+
+Then put your app's Client Secret in a `Config.toml` in this directory (keep it out of version control):
+
+```toml
+[config]
+webhookSecret = "<your app's Client Secret>"
+```
 
 ## Run the example
 

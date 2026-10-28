@@ -34,8 +34,9 @@ service shopify:CustomersService on webhookListener {
     }
 
     remote function onCustomersMarketingConsentUpdate(shopify:CustomerEvent payload) returns error? {
+        // This topic carries the phone and SMS consent, not the email.
         log:printInfo("Marketing consent changed, update CRM subscription state",
-                id = payload.id, email = payload.email);
+                id = payload.id, phone = payload.phone, smsConsent = payload.smsMarketingConsent?.state);
     }
 
     remote function onCustomersUpdate(shopify:CustomerEvent payload) returns error? {
