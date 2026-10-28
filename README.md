@@ -18,6 +18,15 @@ on your behalf. Each notification carries the full resource representation (the 
 product, or fulfillment), not just a change reference, so no follow-up API call is needed to see what
 changed.
 
+### Key features
+
+- Receives 15 Shopify events for orders, customers, products and fulfillments
+- Verifies every delivery with the app's client secret (HMAC-SHA256, `X-Shopify-Hmac-Sha256`)
+- Typed payload records carrying the full order, customer, product or fulfillment
+- Acknowledges each delivery before running your handler, so a slow or failing handler doesn't cause retries
+- Services can be attached on their own path, so several triggers and HTTP services can share one port
+- Trigger services are listed by `bal build --export-endpoints` (Ballerina 2201.13.6 or later)
+
 ## Setup guide
 
 Before using this connector in your Ballerina application, you need a Shopify partner account and a
