@@ -16,13 +16,15 @@ The [Ballerina](https://ballerina.io/) listener for Shopify allows you to listen
 This module receives Shopify's webhook notifications directly - it does not call Shopify's Admin API
 on your behalf. Each notification carries the full resource representation (the whole order, customer,
 product, or fulfillment), not just a change reference, so no follow-up API call is needed to see what
-changed.
+changed. A subscription that sets `include_fields` gets only the fields it lists; fetch anything else
+with the Admin API.
 
 ### Key features
 
 - Receives 15 Shopify events for orders, customers, products and fulfillments
 - Verifies every delivery with the app's client secret (HMAC-SHA256, `X-Shopify-Hmac-Sha256`)
-- Typed payload records carrying the full order, customer, product or fulfillment
+- Typed payload records carrying the full order, customer, product or fulfillment (or the fields a
+  subscription picks with `include_fields`)
 - Acknowledges each delivery before running your handler, so a slow or failing handler doesn't cause retries
 - Services can be attached on their own path, so several triggers and HTTP services can share one port
 - Trigger services are listed by `bal build --export-endpoints` (Ballerina 2201.13.6 or later)
