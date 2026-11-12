@@ -1,6 +1,9 @@
+# Written by bal asyncapi. Packs the trigger's compiler plugin, which lists the trigger's services in
+# target/artifact/endpoints.yaml when an app is built with bal build --export-endpoints. The jar is
+# copied there from the asyncapi tool during the build, by the [[tool.asyncapi]] entry in Ballerina.toml.
 [plugin]
 id = "asyncapi-compiler-plugin"
 class = "io.ballerina.asyncapi.trigger.plugin.AsyncAPICompilerPlugin"
 
 [[dependency]]
-path = "../compiler-plugin/build/libs/shopify.trigger-compiler-plugin-0.2.0-SNAPSHOT.jar"
+path = "target/tool-cache/trigger-plugin/asyncapi-trigger-compiler-plugin.jar"
