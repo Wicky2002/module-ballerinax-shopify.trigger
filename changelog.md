@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [Order webhooks with a geocoded billing or shipping address no longer fail to bind](https://github.com/wso2/product-integrator/issues/148). `latitude` and `longitude` are now `string|decimal`, because Shopify sends them as numbers although its documentation shows strings.
 
-## [0.2.0] - 2026-09-28
+## [1.0.0]
 ### Added
 - [Services on the trigger listener are listed by `bal build --export-endpoints`](https://github.com/ballerina-platform/ballerina-library/issues/9312), through a compiler plugin packaged with the trigger. Endpoint export needs Ballerina 2201.13.6 or later; on earlier versions the plugin only warns and the build continues.
 
