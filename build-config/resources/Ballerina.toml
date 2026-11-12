@@ -9,3 +9,8 @@ keywords = ["Name/Shopify Trigger", "Area/E-Commerce", "Vendor/Shopify", "Cost/P
 icon = "icon.png"
 repository = "https://github.com/ballerina-platform/module-ballerinax-shopify.trigger"
 include = ["metadata/**"]
+
+# Copies the trigger's compiler plugin from the asyncapi tool during the build
+[[tool.asyncapi]]
+id = "trigger-plugin"
+version = "0.13.3"

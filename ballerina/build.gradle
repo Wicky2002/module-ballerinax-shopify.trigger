@@ -36,8 +36,6 @@ def packageOrg = "ballerinax"
 def tomlVersion = stripBallerinaExtensionVersion("${project.version}")
 def ballerinaTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/Ballerina.toml")
 def ballerinaTomlFile = new File("$project.projectDir/Ballerina.toml")
-def compilerPluginTomlFilePlaceHolder = new File("${project.rootDir}/build-config/resources/CompilerPlugin.toml")
-def compilerPluginTomlFile = new File("$project.projectDir/CompilerPlugin.toml")
 
 def stripBallerinaExtensionVersion(String extVersion) {
     if (extVersion.matches(project.ext.timestampedVersionRegex)) {
@@ -66,7 +64,6 @@ task updateTomlFiles {
         def newBallerinaToml = ballerinaTomlFilePlaceHolder.text.replace("@project.version@", project.version)
         newBallerinaToml = newBallerinaToml.replace("@toml.version@", tomlVersion)
         ballerinaTomlFile.text = newBallerinaToml
-        compilerPluginTomlFile.text = compilerPluginTomlFilePlaceHolder.text.replace("@project.version@", project.version)
     }
 }
 
@@ -76,9 +73,9 @@ task commitTomlFiles {
         execHelper.execOperations.exec {
             ignoreExitValue true
             if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-                commandLine 'cmd', '/c', "git commit -m \"[Automated] Update the toml files\" Ballerina.toml Dependencies.toml CompilerPlugin.toml"
+                commandLine 'cmd', '/c', "git commit -m \"[Automated] Update the toml files\" Ballerina.toml Dependencies.toml"
             } else {
-                commandLine 'sh', '-c', "git commit -m '[Automated] Update the toml files' Ballerina.toml Dependencies.toml CompilerPlugin.toml"
+                commandLine 'sh', '-c', "git commit -m '[Automated] Update the toml files' Ballerina.toml Dependencies.toml"
             }
         }
     }
@@ -107,9 +104,6 @@ clean {
 }
 
 build.dependsOn "updateTomlFiles"
-build.dependsOn ":shopify.trigger-compiler-plugin:build"
-// bal test loads the compiler plugin jar named in CompilerPlugin.toml, so it must be built first.
-test.dependsOn ":shopify.trigger-compiler-plugin:jar"
 build.dependsOn "generatePomFileForMavenPublication"
 publishToMavenLocal.dependsOn build
 publish.dependsOn build
