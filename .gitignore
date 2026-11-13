@@ -16,6 +16,7 @@
 # Package Files
 *.jar
 !gradle/wrapper/gradle-wrapper.jar
+!ballerina/lib/asyncapi-trigger-compiler-plugin.jar
 *.war
 *.ear
 *.zip
